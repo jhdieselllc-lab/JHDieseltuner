@@ -3,7 +3,7 @@ Unicode true
 !include "x64.nsh"
 !include "LogicLib.nsh"
 !include "WinVer.nsh"
-!include "${PROJECT_DIR}/desktop/installer-files.nsh"
+!include "${INSTALLER_FILE_LIST}"
 !ifndef PAYLOAD_DIR
  !define PAYLOAD_DIR "${PROJECT_DIR}/release/win-unpacked"
 !endif
@@ -36,7 +36,7 @@ Section "JH Diesel"
  SetOutPath "$INSTDIR"
  SetOverwrite on
  ClearErrors
- File /r "${PAYLOAD_DIR}/*"
+ File /r "${PAYLOAD_FILES}"
  IfErrors 0 +3
   MessageBox MB_ICONSTOP "Installation could not copy all files. Close JH Diesel, check disk space and run this installer again."
   Abort

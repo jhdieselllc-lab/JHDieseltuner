@@ -13,8 +13,10 @@ const path=require('node:path');
   appOutDir:path.join(root,'installable','win-unpacked'),
   packager:{projectDir:root},
  });
+ const fileList=path.join(root,'desktop','installer-files.nsh');
+ fs.accessSync(fileList,fs.constants.R_OK);
  const prefix=process.platform==='win32'?'/':'-';
- execFileSync(compiler.path,[`${prefix}DPROJECT_DIR=${root}`,`${prefix}DVERSION=${version}`,`${prefix}DPAYLOAD_DIR=${path.join(root,'installable','win-unpacked')}`,`${prefix}XOutFile "${output}"`,`${prefix}XSetCompressor zlib`,path.join(root,'desktop','installer.nsi')],{stdio:'inherit',env:{...process.env,...compiler.env}});
+ execFileSync(compiler.path,[`${prefix}DPROJECT_DIR=${root}`,`${prefix}DVERSION=${version}`,`${prefix}DPAYLOAD_DIR=${path.join(root,'installable','win-unpacked')}`,`${prefix}DINSTALLER_FILE_LIST=${fileList}`,`${prefix}DPAYLOAD_FILES=${path.join(root,'installable','win-unpacked','*')}`,`${prefix}XOutFile "${output}"`,`${prefix}XSetCompressor zlib`,path.join(root,'desktop','installer.nsi')],{stdio:'inherit',env:{...process.env,...compiler.env}});
  const size=fs.statSync(output).size;
  if(size<50*1024*1024)throw Error('Installer unexpectedly small; payload verification required');
  console.log(`Installer compiled: ${output} (${size} bytes)`);
