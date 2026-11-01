@@ -9,9 +9,10 @@ const path = require('node:path');
   const errors = [];
   const consoleMessages = [];
   let app;
+  let page;
   try {
     app = await electron.launch({ executablePath: process.argv[2], timeout: 60000 });
-    const page = await app.firstWindow({ timeout: 60000 });
+    page = await app.firstWindow({ timeout: 60000 });
     page.on('pageerror', error => errors.push(error.message));
     page.on('console', message => {
       consoleMessages.push({ type: message.type(), text: message.text() });
@@ -79,6 +80,10 @@ const path = require('node:path');
     assert.deepEqual(errors, [], 'Renderer errors must be resolved');
     await fs.writeFile(path.join(output, 'launch.json'), JSON.stringify({ passed: true, runtime, discovery, images, consoleMessages }, null, 2));
   } catch (error) {
+    if (page) {
+      await page.screenshot({ path: path.join(output, 'failure-screen.png'), fullPage: true }).catch(() => {});
+      await fs.writeFile(path.join(output, 'failure-page.html'), await page.content().catch(() => '')).catch(() => {});
+    }
     await fs.writeFile(path.join(output, 'launch-error.json'), JSON.stringify({ error: error.stack, errors, consoleMessages }, null, 2));
     throw error;
   } finally {
