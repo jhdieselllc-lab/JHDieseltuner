@@ -1,4 +1,4 @@
-import {useEffect,useState} from 'react';
+import {useState} from 'react';
 const control='mt-2 w-full rounded-lg border border-line bg-bg p-3 text-sm text-fg';
 const button='rounded-lg border border-line px-4 py-3 text-xs font-semibold hover:bg-elevated disabled:opacity-40';
 const engines=['6.6L Duramax LLY','GM 5.3L gasoline','GM 6.0L gasoline','Mitsubishi Eclipse 2.4L (2003–2004)','2017+ Chevrolet / GMC (identify engine)','2017+ Ford (identify engine)','2017+ Ram / Dodge (identify engine)'];
@@ -6,9 +6,10 @@ const controllers=['Unidentified','LLY ECM (verify part/OS)','P01','P59','E38 / 
 const transmissions=['Allison 5-speed (AL5; verify TCM)','Allison 6-speed (verify TCM)','4L60E','4L80E','Manual (current or planned swap)','Other / unidentified','Eclipse 5-speed manual (verify code)','Eclipse 4-speed automatic (verify code)'];
 type Project={year:string;engine:string;controller:string;transmission:string;vin:string;hardware:string;os:string;usage:string};
 const defaults:Project={year:'2005',engine:engines[0],controller:controllers[1],transmission:transmissions[0],vin:'',hardware:'',os:'',usage:'Personal vehicle / chassis project'};
+function loadProject():Project{try{const raw=JSON.parse(localStorage.getItem('jh-project-v1')||'null');const saved=raw&&{...defaults,...raw};if(saved&&Object.keys(defaults).every(k=>typeof saved[k]==='string')&&engines.includes(saved.engine)&&controllers.includes(saved.controller)&&transmissions.includes(saved.transmission)&&/^\d{4}$/.test(saved.year)&&Number(saved.year)>=1999&&Number(saved.year)<=2026){return saved;}}catch{/* corrupt saved profile */}return defaults;}
 export function ProgrammingWorkbench(){
- const [project,setProject]=useState<Project>(defaults),[message,setMessage]=useState(''),[busy,setBusy]=useState(false),[file,setFile]=useState<{name:string;bytes:number;sha256:string}|null>(null);
- useEffect(()=>{try{const raw=JSON.parse(localStorage.getItem('jh-project-v1')||'null');const saved=raw&&{...defaults,...raw};if(saved&&Object.keys(defaults).every(k=>typeof saved[k]==='string')&&engines.includes(saved.engine)&&controllers.includes(saved.controller)&&transmissions.includes(saved.transmission)&&/^\d{4}$/.test(saved.year)&&Number(saved.year)>=1999&&Number(saved.year)<=2026){setProject(saved);}}catch{/* ignore corrupt saved profile */}},[]);
+ const [project,setProject]=useState<Project>(loadProject),[message,setMessage]=useState(''),[busy,setBusy]=useState(false),[file,setFile]=useState<{name:string;bytes:number;sha256:string}|null>(null);
+
  const isGas=['GM 5.3L gasoline','GM 6.0L gasoline'].includes(project.engine);const companionEligible=isGas&&['P01','P59'].includes(project.controller);
  function edit<K extends keyof Project>(key:K,value:Project[K]){setProject(p=>({...p,[key]:value}));setMessage('');}
  async function launch(){setBusy(true);try{if(!window.jhDesktop)throw Error('Use the installed Windows desktop app to open the included companion.');const result=await window.jhDesktop.launchPcmHammer(project.controller);setMessage(result.message);}catch(e){setMessage(e instanceof Error?e.message:String(e));}finally{setBusy(false);}}

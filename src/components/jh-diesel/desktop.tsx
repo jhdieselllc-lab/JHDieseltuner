@@ -62,7 +62,7 @@ export function JHDieselDesktop() {
   const [year, setYear] = useState("2005");
   const [engine, setEngine] = useState("LLY");
   const [vin, setVin] = useState("");
-  const [notice, setNotice] = useState("Preview mode · Hardware validation pending. Browser mode supports log analysis and tune proposals only.");
+  const [notice, setNotice] = useState("Hardware validation pending · Local sizing, file analysis and project planning are available. Native diagnostics need a validated interface and vehicle profile.");
   const active = nav.find((n) => n.id === section)!;
   const vehicle = useMemo(() => `${year} Chevrolet Silverado 2500HD · ${engine} 6.6L Duramax`, [year, engine]);
 
