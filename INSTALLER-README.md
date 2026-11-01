@@ -2,7 +2,7 @@
 
 Windows 10/11 x64 installer. Run JH-Diesel-Setup-0.5.0.exe, choose your install folder, then launch the JH Diesel shortcut. No Node.js or standalone Python installation is needed. NEXIQ vendor drivers are installed separately from NEXIQ. The included worker uses embedded 32-bit Python for RP1210 drivers of matching architecture.
 
-This is an unsigned development installer. Windows may show an unknown publisher warning. It has been built and statically inspected on Linux; Windows installation, application launch, adapters and physical ECM programming have not been tested here.
+This is an unsigned development installer. Windows may show an unknown publisher warning. The GitHub Windows workflow checks build, installation, packaged application launch and uninstall. Use the successful run for the exact version you install. Physical adapter communication and ECM programming remain untested.
 
 ## Your requested projects
 

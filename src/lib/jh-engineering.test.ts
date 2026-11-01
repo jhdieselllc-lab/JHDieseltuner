@@ -7,6 +7,7 @@ test('four-stroke displacement and ideal-gas reference produce 254 CFM at standa
  const boosted=airflow({...air,boostPsi:air.baroPsi});assert.ok(Math.abs(boosted.lbMin/r.lbMin-2)<1e-10);
  assert.ok(airflow({...air,chargeC:60}).lbMin<r.lbMin);
  assert.throws(()=>airflow({...air,inletLossPsi:20}));assert.throws(()=>airflow({...air,efficiency:0}));
+ assert.throws(()=>airflow({...air,liters:1e308,rpm:1e308}));
 });
 test('PFI injector pressure scaling and diesel total-cycle fuel use distinct physical models',()=>{
  const r=fuelSizing({hp:400,bsfc:.6,count:4,duty:.8,ratedLbHr:75,ratedDeltaPsi:43.5,actualDeltaPsi:43.5,densityGcc:.745,rpm:6000,cylinders:4});
@@ -21,4 +22,6 @@ test('scope data retains differential polarity, rejects blanks, nonmonotonic tim
 test('CAN identifiers normalize and gaps refer only to capture time, with FD payloads accepted',()=>{
  const frames=parseCanFrames('time_ms,can_id,data_hex\n0,123,AB\n10,0x123,CD\n35,123,00');const rows=canInventory(frames);assert.equal(rows[0].id,'0x123');assert.equal(rows[0].maxGapMs,25);assert.equal(rows[0].count,3);
  assert.throws(()=>parseCanFrames('time_ms,can_id,data_hex\n0,20000000,00'));assert.throws(()=>parseCanFrames('time_ms,can_id,data_hex\n0,123,0'));
+ assert.equal(parseCanFrames('time_ms,can_id,data_hex\n0,1FFFFFFF,'+'AB'.repeat(64))[0].data_hex.length,128);
+ assert.throws(()=>parseCanFrames('time_ms,can_id,data_hex\n0,123,'+'AB'.repeat(9)));
 });
