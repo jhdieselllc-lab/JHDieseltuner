@@ -1,0 +1,52 @@
+name: Windows installer verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Log analysis tests
+        run: npm run test:jh
+      - name: Worker tests
+        run: node --test desktop/native-worker.test.cjs
+      - name: Python service tests
+        run: python -m unittest discover -s desktop/native-service/python -p test_service.py
+      - name: Build Windows installer
+        run: npm run desktop:installer
+      - name: Install, launch, inspect and uninstall on Windows
+        shell: pwsh
+        run: ./scripts/verify-windows.ps1
+      - name: Upload verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-verification-evidence
+          path: verification-results/
+          if-no-files-found: warn
+      - name: Upload verified installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: JH-Diesel-Windows-installer
+          path: installable/JH-Diesel-Setup-*.exe
+          if-no-files-found: error
