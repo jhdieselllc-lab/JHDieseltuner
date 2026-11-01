@@ -28,6 +28,8 @@ jobs:
         run: npm run typecheck
       - name: Log analysis tests
         run: npm run test:jh
+      - name: Engineering math, CAN capture and OEM link tests
+        run: npm run test:engineering
       - name: Worker tests
         run: node --test desktop/native-worker.test.cjs
       - name: Python service tests

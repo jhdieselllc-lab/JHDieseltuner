@@ -1,6 +1,6 @@
-# JH Diesel Personal Edition 0.4.0
+# JH Diesel Personal Edition 0.5.0
 
-Windows 10/11 x64 installer. Run JH-Diesel-Setup-0.4.0.exe, choose your install folder, then launch the JH Diesel shortcut. No Node.js or standalone Python installation is needed. NEXIQ vendor drivers are installed separately from NEXIQ. The included worker uses embedded 32-bit Python for RP1210 drivers of matching architecture.
+Windows 10/11 x64 installer. Run JH-Diesel-Setup-0.5.0.exe, choose your install folder, then launch the JH Diesel shortcut. No Node.js or standalone Python installation is needed. NEXIQ vendor drivers are installed separately from NEXIQ. The included worker uses embedded 32-bit Python for RP1210 drivers of matching architecture.
 
 This is an unsigned development installer. Windows may show an unknown publisher warning. It has been built and statically inspected on Linux; Windows installation, application launch, adapters and physical ECM programming have not been tested here.
 
@@ -39,3 +39,16 @@ Research references:
 - https://github.com/PcmHammer/PcmHammer/tree/2.0.0
 - https://www.efilive.com/gm-diesel-scan-and-tune
 - https://www.efilive.com/tcm-tuning
+
+
+## Version 0.5 engineering and diagnostic workspaces
+
+Airflow and turbo sizing: four-stroke VE/ideal-gas demand, actual versus standard CFM, map-corrected mass flow, pressure losses, wheel trim and descriptive blade/splitter records. Port-injector sizing and diesel total-cycle fuel estimates use separate models. No compressor map, blade-count flow multiplier, pulse-width tune or mechanical power guarantee is fabricated.
+
+CAN-H/CAN-L: import measured two-channel voltage CSVs, inspect differential/common-mode traces and sample intervals, and inspect a separate decoded-frame CSV with user-assigned module labels and expected periods. No live analog sampler, CAN FD driver, automatic module identification or OEM diagnostic decoder is implemented. Verify the exact network and probing method for 2017-onward Chevrolet/Ford/Ram.
+
+OEM updates: official portal shortcuts and a saved module/calibration inventory. No OEM server integration, automatic update eligibility, free calibration download, or factory flashing is implemented. OEM entitlements remain separate.
+
+2003–2004 Eclipse 2.4L: dedicated saved project presets, airflow/PFI sizing, imported numeric logs and OEM references. Native legacy diagnostics, ECU definitions, tuning and flashing are not implemented. It is not a P01/P59 companion target.
+
+DEF/emissions: equipment/diagnostic worksheets and requested configuration records, including unsupported disable requests. These records do not write calibrations, suppress DTCs or alter readiness.

@@ -1,3 +1,7 @@
+import {EmissionsWorkbench} from './emissions';
+import {AirflowWorkbench} from './engineering';
+import {CanMonitor} from './can-monitor';
+import {OemUpdates} from './oem-updates';
 import { ProgrammingWorkbench } from "./programming";
 import { ConnectionWorkbench, CoverageWorkbench, LogWorkbench, TuneWorkbench } from "./workbench";
 import { useMemo, useState } from "react";
@@ -8,7 +12,7 @@ import {
   TerminalSquare, Truck, Usb, Waves, X,
 } from "lucide-react";
 
-type Section = "overview" | "connect" | "vehicle" | "diagnostics" | "live" | "calibration" | "files" | "settings" | "coverage";
+type Section = "emissions" | "airflow" | "can" | "oem" | "overview" | "connect" | "vehicle" | "diagnostics" | "live" | "calibration" | "files" | "settings" | "coverage";
 type InterfaceName = "Nexiq USB-Link 3" | "HP Tuners interface" | "J2534 pass-through" | "JH Link (future)";
 
 const nav: { id: Section; label: string; icon: typeof LayoutDashboard; group: string }[] = [
@@ -20,6 +24,10 @@ const nav: { id: Section; label: string; icon: typeof LayoutDashboard; group: st
   { id: "calibration", label: "Tune planner", icon: SlidersHorizontal, group: "CALIBRATION" },
   { id: "files", label: "File manager", icon: FileClock, group: "CALIBRATION" },
   { id: "coverage", label: "Coverage & explanations", icon: CircleHelp, group: "SYSTEM" },
+  { id: "emissions", label: "DEF & emissions", icon: ShieldCheck, group: "CALIBRATION" },
+  { id: "airflow", label: "Airflow & fuel sizing", icon: SlidersHorizontal, group: "CALIBRATION" },
+  { id: "can", label: "CAN-H / CAN-L", icon: Waves, group: "ANALYSIS" },
+  { id: "oem", label: "OEM updates", icon: Cpu, group: "SYSTEM" },
   { id: "settings", label: "Settings", icon: Settings2, group: "SYSTEM" },
 ];
 
@@ -78,7 +86,7 @@ export function JHDieselDesktop() {
         </div>
         <div className="mt-auto border-t border-line p-4">
           <div className="rounded-lg border border-line bg-surface p-3"><div className="mb-2 flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-warn"/><span className="text-xs font-medium">Vehicle not identified</span></div><p className="text-[11px] leading-relaxed text-subtle">Connect an approved interface to begin vehicle diagnostics.</p></div>
-          <div className="mt-4 flex items-center justify-between text-[10px] text-subtle"><span>JH Diesel Desktop</span><span>v0.4.0 · Personal edition</span></div>
+          <div className="mt-4 flex items-center justify-between text-[10px] text-subtle"><span>JH Diesel Desktop</span><span>v0.5.0 · Personal edition</span></div>
         </div>
       </aside>
       {mobileNav && <button className="fixed inset-0 z-30 bg-black/60 lg:hidden" onClick={() => setMobileNav(false)} aria-label="Close menu"/>}
@@ -109,6 +117,10 @@ export function JHDieselDesktop() {
             </div>
           </>}
 
+          {section === "emissions" && <EmissionsWorkbench/>}
+          {section === "airflow" && <AirflowWorkbench/>}
+          {section === "can" && <CanMonitor/>}
+          {section === "oem" && <OemUpdates/>}
           {section === "coverage" && <CoverageWorkbench/>}
           {section === "connect" && <><ConnectionWorkbench/>
             <div className="mb-6"><p className="mb-2 text-[10px] font-bold tracking-[.2em] text-accent">COMMUNICATION LAYER</p><h1 className="text-2xl font-semibold">Vehicle connection</h1><p className="mt-2 text-sm text-muted">Choose the interface and communication stack used to connect to a vehicle.</p></div>

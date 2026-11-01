@@ -24,7 +24,8 @@
     "desktop:build": "vite build --config vite.desktop.config.ts",
     "test:jh": "node --experimental-strip-types --test src/lib/jh-log.test.ts",
     "desktop:built": "electron . --jh-built",
-    "desktop:installer": "npm run desktop:build && node scripts/stage-desktop.mjs && electron-builder --win dir --x64 --publish never --config.directories.output=installable && node scripts/compile-installer.cjs"
+    "desktop:installer": "npm run desktop:build && node scripts/stage-desktop.mjs && electron-builder --win dir --x64 --publish never --config.directories.output=installable && node scripts/compile-installer.cjs",
+    "test:engineering": "node --experimental-strip-types --test src/lib/jh-engineering.test.ts && node --test desktop/oem-portals.test.cjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.4",
@@ -103,7 +104,7 @@
     "typescript-eslint": "^8.56.1"
   },
   "productName": "JH Diesel Calibration Suite",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "main": "desktop/main.cjs",
   "description": "JH Diesel desktop diagnostics, log analysis and GM project workbench",
   "author": "Jamie House",

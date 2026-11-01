@@ -1,7 +1,8 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('node:path');
 const native = require('./native-worker.cjs');
 const companion = require('./companion.cjs');
+const { resolvePortal } = require('./oem-portals.cjs');
 if (app.isPackaged) native.configure({ python:path.join(process.resourcesPath,'python-x86','python.exe'), script:path.join(process.resourcesPath,'native-service','service.py') });
 
 const isDev = !app.isPackaged && !process.argv.includes('--jh-built');
@@ -40,6 +41,11 @@ ipcMain.handle('jh:runtime-info', () => ({
   packaged: app.isPackaged,
   version: app.getVersion(),
 }));
+
+ipcMain.handle('jh:open-oem-portal', async (event, id) => {
+  if (!mainWindow || event.sender !== mainWindow.webContents || event.senderFrame !== mainWindow.webContents.mainFrame) throw new Error('Untrusted sender');
+  await shell.openExternal(resolvePortal(id));
+});
 
 ipcMain.handle('jh:native', async (event, op, args) => {
   if (!mainWindow || event.sender !== mainWindow.webContents || event.senderFrame !== mainWindow.webContents.mainFrame) throw new Error('Untrusted sender');
